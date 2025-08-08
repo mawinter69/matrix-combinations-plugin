@@ -16,7 +16,8 @@ t = namespace("/lib/hudson")
 st = namespace("jelly:stapler")
 f = namespace("lib/form")
 nsProject = namespace("/hudson/plugins/matrix_configuration_parameter/taglib")
-
+mProject = namespace("/lib/hudson/matrix-project")
+st.adjunct(includes: "hudson.plugins.matrix_configuration_parameter.style")
 
 def valueIt = it;
 
@@ -54,7 +55,7 @@ private void drawParameterBody(MatrixCombinationsParameterDefinition paramDef, N
     f.entry(title: h.escape(valueIt.name), description: it.formattedDescription) {
         div(name: "parameter", class: "matrix-combinations-parameter") {
             input(type: "hidden", name: "name", value: valueIt.getName())
-            nsProject.matrix(it: build, layouter: layouter) {
+            mProject.matrix(it: build, layouter: layouter, noTitle: true) {
               drawTableBall(p, project.axes, valueIt, project, build, layouter);
             }
             if (paramDef != null) {
@@ -68,24 +69,26 @@ private void drawTableBall(Combination combination,AxisList axes,matrixValue,Mat
 
     run = build.getRun(combination);
     result = matrixValue.combinationExists(axes, combination);
-    if (run != null && result){
-        a(href:rootURL+"/"+run.getUrl()){
-            l.icon(class:"icon-md "+run.getIconColor().getIconClassName())
-            if (!layouter.x || !layouter.y) {
-              text(combination.toString(layouter.z))
+    div(class: "mcp-cell") {
+        if (run != null && result){
+            a(href:rootURL+"/"+run.getUrl(), class: "mcp-cell") {
+                l.icon(class:"icon-md "+run.getIconColor().getIconClassName())
+                if (!layouter.x || !layouter.y) {
+                  text(combination.toString(layouter.z))
+                }
             }
-        }
-        span(class: "combination", "data-combination": combination.toIndex(axes)) {
-            f.checkbox(checked: true, name: "combinations", json: combination.toString());
-        }
+            span(class: "combination", "data-combination": combination.toIndex(axes)) {
+                f.checkbox(checked: true, name: "combinations", json: combination.toString());
+            }
 
-    } else {
-        l.icon(class:"icon-md icon-nobuilt")
-        if (!layouter.x || !layouter.y) {
-          text(combination.toString(layouter.z))
-        }
-        span(class: "combination", "data-combination": combination.toIndex(axes)) {
-            f.checkbox(checked: "false", name: "combinations", json: combination.toString())
+        } else {
+            l.icon(class: "icon-md icon-nobuilt")
+            if (!layouter.x || !layouter.y) {
+                text(combination.toString(layouter.z))
+            }
+            span(class: "combination", "data-combination": combination.toIndex(axes)) {
+                f.checkbox(checked: "false", name: "combinations", json: combination.toString())
+            }
         }
     }
 }

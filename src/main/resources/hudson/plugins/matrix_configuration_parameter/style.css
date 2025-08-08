@@ -1,0 +1,9 @@
+.mcp-cell {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.combination {
+  height: 22px;
+}

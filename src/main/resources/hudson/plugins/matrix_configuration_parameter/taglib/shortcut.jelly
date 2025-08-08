@@ -41,7 +41,7 @@ THE SOFTWARE.
   <st:adjunct includes="hudson.plugins.matrix_configuration_parameter.taglib.shortcut.shortcut" />
 </st:once>
 
-<div class="matrix-combinations-parameter-shortcut">
+<div class="matrix-combinations-parameter-shortcut jenkins-!-margin-top-1">
   <span class="head">Select: </span>
   <ul class="shortcuts">
     <j:forEach var="shortcut" items="${parameter.shortcutList}">

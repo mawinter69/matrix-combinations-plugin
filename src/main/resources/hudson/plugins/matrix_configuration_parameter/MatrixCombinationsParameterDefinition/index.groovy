@@ -1,4 +1,4 @@
-package hudson.plugins.matrix_configuration_parameter.matrixcombinationparameterDefinition
+package hudson.plugins.matrix_configuration_parameter.MatrixCombinationsParameterDefinition
 
 import hudson.matrix.AxisList
 import hudson.matrix.Combination
@@ -16,6 +16,8 @@ t = namespace("/lib/hudson")
 st = namespace("jelly:stapler")
 f = namespace("lib/form")
 nsProject = namespace("/hudson/plugins/matrix_configuration_parameter/taglib")
+mProject = namespace("/lib/hudson/matrix-project")
+st.adjunct(includes: "hudson.plugins.matrix_configuration_parameter.style")
 
 
 def paramDef = it;
@@ -40,10 +42,6 @@ Layouter layouter = new Layouter<Combination>(axes) {
     }
 };
 
-
-
-
-
 drawMainBody(paramDef, f, nameIt, axes, project, project.lastBuild, layouter)
 
 private void drawMainBody(MatrixCombinationsParameterDefinition paramDef, Namespace f, String nameIt, AxisList axes,MatrixProject project,MatrixBuild build,Layouter layouter) {
@@ -51,7 +49,7 @@ private void drawMainBody(MatrixCombinationsParameterDefinition paramDef, Namesp
     f.entry(title: h.escape(nameIt), description: it.formattedDescription) {
         div(name: "parameter", class: "matrix-combinations-parameter") {
             input(type: "hidden", name: "name", value: nameIt)
-            nsProject.matrix(it: project, layouter: layouter) {
+            mProject.matrix(it: project, layouter: layouter, noTitle: true) {
               drawMainBall(paramDef, p, project.axes, nameIt, project, layouter);
             }
             nsProject.shortcut(parameter: paramDef, project: project, build: build);
@@ -65,27 +63,31 @@ private void drawMainBall(MatrixCombinationsParameterDefinition paramDef, Combin
     if (lastBuild != null && lastBuild.getRun(combination)!=null){
         lastRun = lastBuild.getRun(combination);
         if (lastRun != null){
-            a(href:rootURL+"/"+lastRun.getUrl()){
-            l.icon(class:"icon-md "+lastRun.getIconColor().getIconClassName())
-            if (!layouter.x || !layouter.y) {
-              text(combination.toString(layouter.z))
-            }
-            }
-            checked = combination.evalGroovyExpression(axes, paramDef.defaultCombinationFilter?:project.combinationFilter)
-            span(class: "combination", "data-combination": combination.toIndex(axes)) {
-                f.checkbox(checked: checked, name: "combinations", json: combination.toString())
+            div(class: "mcp-cell") {
+                a(href: rootURL + "/" + lastRun.getUrl(), class: "mcp-cell") {
+                    l.icon(class: "icon-md " + lastRun.getIconColor().getIconClassName())
+                    if (!layouter.x || !layouter.y) {
+                        text(combination.toString(layouter.z))
+                    }
+                }
+                checked = combination.evalGroovyExpression(axes, paramDef.defaultCombinationFilter ?: project.combinationFilter)
+                span(class: "combination", "data-combination": combination.toIndex(axes)) {
+                    f.checkbox(checked: checked, name: "combinations", json: combination.toString())
+                }
             }
         }
 
     } else{
-        l.icon(class:"icon-md icon-nobuilt")
-        if (!layouter.x || !layouter.y) {
-          text(combination.toString(layouter.z))
-        }
-        
-        checked = combination.evalGroovyExpression(axes, paramDef.defaultCombinationFilter?:project.combinationFilter)
-        span(class: "combination", "data-combination": combination.toIndex(axes)) {
-            f.checkbox(checked: checked, name: "combinations", json: combination.toString())
+        div(class: "mcp-cell") {
+            l.icon(class: "icon-md icon-nobuilt")
+            if (!layouter.x || !layouter.y) {
+                text(combination.toString(layouter.z))
+            }
+
+            checked = combination.evalGroovyExpression(axes, paramDef.defaultCombinationFilter ?: project.combinationFilter)
+            span(class: "combination", "data-combination": combination.toIndex(axes)) {
+                f.checkbox(checked: checked, name: "combinations", json: combination.toString())
+            }
         }
     }
 
