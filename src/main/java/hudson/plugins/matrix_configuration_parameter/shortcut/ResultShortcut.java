@@ -41,7 +41,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
-import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
@@ -113,7 +112,7 @@ public class ResultShortcut extends MatrixCombinationsShortcut {
      */
     @Override
     public String getId() {
-        return StringUtils.join(getResultsToCheck(), '-');
+        return String.join("-", getResultsToCheck());
     }
 
     /**

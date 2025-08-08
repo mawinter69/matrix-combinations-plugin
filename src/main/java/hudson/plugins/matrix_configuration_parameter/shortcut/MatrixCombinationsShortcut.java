@@ -37,7 +37,6 @@ import java.util.Collection;
 import java.util.Collections;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
@@ -69,14 +68,13 @@ public abstract class MatrixCombinationsShortcut extends AbstractDescribableImpl
      */
     @Nonnull
     public final String getCombinationsData(@Nonnull final MatrixProject project, @CheckForNull MatrixBuild build) {
-        return StringUtils.join(
-                Collections2.transform(getCombinations(project, build), new Function<Combination, String>() {
+        return String.join(
+                ",", Collections2.transform(getCombinations(project, build), new Function<Combination, String>() {
                     @Override
                     public String apply(Combination c) {
                         return Integer.toString(c.toIndex(project.getAxes()));
                     }
-                }),
-                ',');
+                }));
     }
 
     /**

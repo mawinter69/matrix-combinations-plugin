@@ -34,7 +34,6 @@ import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nonnull;
 import net.sf.json.JSONObject;
-import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 
@@ -93,8 +92,9 @@ public class MatrixCombinationsParameterDefinition extends SimpleParameterDefini
             String defaultCombinationFilter,
             List<MatrixCombinationsShortcut> shortcutList) {
         super(name, description);
-        this.defaultCombinationFilter =
-                !StringUtils.isBlank(defaultCombinationFilter) ? defaultCombinationFilter : null;
+        this.defaultCombinationFilter = defaultCombinationFilter != null && !defaultCombinationFilter.isBlank()
+                ? defaultCombinationFilter
+                : null;
         this.shortcutList = (shortcutList != null) ? shortcutList : getDefaultShortcutList();
     }
 

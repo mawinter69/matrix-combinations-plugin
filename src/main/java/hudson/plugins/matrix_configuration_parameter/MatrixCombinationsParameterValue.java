@@ -39,7 +39,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import jenkins.model.Jenkins;
-import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 public class MatrixCombinationsParameterValue extends ParameterValue {
@@ -132,16 +131,13 @@ public class MatrixCombinationsParameterValue extends ParameterValue {
                     return null;
                 }
 
-                return StringUtils.join(
-                        Lists.transform(getCombinations(), new Function<String, String>() {
-                            @Override
-                            public String apply(String combination) {
-                                return String.format(
-                                        "(%s')",
-                                        combination.replace("=", " == '").replace(",", "' && "));
-                            }
-                        }),
-                        " || ");
+                return String.join(" || ", Lists.transform(getCombinations(), new Function<String, String>() {
+                    @Override
+                    public String apply(String combination) {
+                        return String.format(
+                                "(%s')", combination.replace("=", " == '").replace(",", "' && "));
+                    }
+                }));
             }
         };
     }
